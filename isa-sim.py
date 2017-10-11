@@ -317,21 +317,13 @@ while current_cycle<30:
          instructionMemory.read_operand_2(program_counter) , instructionMemory.read_operand_3(program_counter)]
     print(IR)
     if IR[1]=='LI':
+
         try:
-            registerFile.registers['R'+str(0)] = int(IR[3])
-        except:
-            print("error1")
-        try:
-            registerFile.write_register(IR[2], registerFile.read_register('R' + str(0)))
+            registerFile.write_register(IR[2], int(IR[3]))
         except:
             print("error2")
         program_counter = program_counter + 1
-    elif IR[1]=='LD':
-        try:
-            registerFile.write_register(IR[2], registerFile.read_register(IR[3]))
-        except:
-            print("error3")
-        program_counter = program_counter + 1
+
     elif IR[1]=='ADD':
         try:
             registerFile.write_register(IR[2],registerFile.read_register(IR[3])+registerFile.read_register(IR[4]))
@@ -374,28 +366,44 @@ while current_cycle<30:
             program_counter = registerFile.read_register(IR[2])
         except:
             print("error10")
-    elif IR[1] == 'JQ':
+    elif IR[1] == 'JEQ':
         try:
             if registerFile.read_register(IR[3])==registerFile.read_register(IR[4]):
                 program_counter = registerFile.read_register(IR[2])
+            else:
+                program_counter=program_counter+1
         except:
             print("error11")
-    elif IR[1] == 'SD':
+    elif IR[1] == 'JLT':
         try:
             if registerFile.read_register(IR[3])<registerFile.read_register(IR[4]):
                 program_counter = registerFile.read_register(IR[2])
+            else:
+                program_counter=program_counter+1
         except:
-            print("error12")
+            print("error11")
+
     elif IR[1] == 'END':
         try:
-            program_counter = registerFile.read_register(IR[2])
+            program_counter = max_cycles
         except:
             print("error13")
+    elif IR[1] == 'LD':
+        try:
+            registerFile.write_register(IR[2], dataMemory.read_data(registerFile.read_register(IR[3])))
+            program_counter=program_counter+1
+        except:
+            print("error14")
     elif IR[1] == 'SD':
         try:
-            registerFile.write_register(IR[2], registerFile.read_register(IR[3]))
+            dataMemory.write_data(registerFile.read_register(IR[3]),registerFile.read_register(IR[2]))
+            program_counter=program_counter+1
         except:
-            print("error13")
+            print("error15")
+
+
     current_cycle = current_cycle + 1
+
+registerFile.write_register('R0', 0)
 registerFile.print_all()
 print('\n---End of simulation---\n')
