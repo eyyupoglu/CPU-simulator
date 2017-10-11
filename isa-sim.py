@@ -308,9 +308,111 @@ dataMemory = DataMemory()
 instructionMemory = InstructionMemory()
 
 print('\n---Start of simulation---')
+registerFile.print_all()
 
-#####################################
-##      Write your code here      ##
-####################################
 
+while current_cycle<30:
+
+    IR = [program_counter,instructionMemory.read_opcode(program_counter) , instructionMemory.read_operand_1(program_counter) , \
+         instructionMemory.read_operand_2(program_counter) , instructionMemory.read_operand_3(program_counter)]
+    print(IR)
+    if IR[1]=='LI':
+
+        try:
+            registerFile.write_register(IR[2], int(IR[3]))
+        except:
+            print("error2")
+        program_counter = program_counter + 1
+
+    elif IR[1]=='ADD':
+        try:
+            registerFile.write_register(IR[2],registerFile.read_register(IR[3])+registerFile.read_register(IR[4]))
+
+        except:
+            print("error4")
+        program_counter = program_counter + 1
+    elif IR[1]=='SUB':
+        try:
+            registerFile.write_register(IR[2],registerFile.read_register(IR[3])-registerFile.read_register(IR[4]))
+
+        except:
+            print("error5")
+        program_counter = program_counter + 1
+    elif IR[1]=='OR':
+        try:
+            registerFile.write_register(IR[2],registerFile.read_register(IR[3]) | registerFile.read_register(IR[4]))
+        except:
+            print("error6")
+        program_counter = program_counter + 1
+    elif IR[1]=='AND':
+        try:
+            registerFile.write_register(IR[2],registerFile.read_register(IR[3]) & registerFile.read_register(IR[4]))
+        except:
+            print("error7")
+        program_counter = program_counter + 1
+    elif IR[1]=='NOP':
+        try:
+            program_counter = program_counter + 1
+        except:
+            print("error8")
+    elif IR[1] == 'NOT':
+        try:
+            registerFile.write_register(IR[2], ~registerFile.read_register(IR[3]))
+        except:
+            print("error9")
+        program_counter = program_counter + 1
+    elif IR[1] == 'JR':
+        try:
+            program_counter = registerFile.read_register(IR[2])
+        except:
+            print("error10")
+    elif IR[1] == 'JEQ':
+        try:
+            if registerFile.read_register(IR[3])==registerFile.read_register(IR[4]):
+                program_counter = registerFile.read_register(IR[2])
+            else:
+                program_counter=program_counter+1
+        except:
+            print("error11")
+    elif IR[1] == 'JLT':
+        try:
+            if registerFile.read_register(IR[3])<registerFile.read_register(IR[4]):
+                program_counter = registerFile.read_register(IR[2])
+            else:
+                program_counter=program_counter+1
+        except:
+            print("error11")
+
+    elif IR[1] == 'END':
+        try:
+
+            break
+        except:
+            print("error13")
+    elif IR[1] == 'LD':
+        try:
+            registerFile.write_register(IR[2], dataMemory.read_data(registerFile.read_register(IR[3])))
+            program_counter=program_counter+1
+        except:
+            print("error14")
+    elif IR[1] == 'SD':
+        try:
+            dataMemory.write_data(registerFile.read_register(IR[3]),registerFile.read_register(IR[2]))
+            program_counter=program_counter+1
+        except:
+            print("error15")
+
+
+    current_cycle = current_cycle + 1
+
+registerFile.write_register('R0', 0)
+registerFile.print_all()
+
+print("Data memory content (used locations only):")
+for i in range(256):
+    if not dataMemory.read_data(i)==0:
+        print("Address",i,dataMemory.read_data(i))
+
+
+print("Executes in ",current_cycle,"cycles.")
 print('\n---End of simulation---\n')
