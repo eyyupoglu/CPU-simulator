@@ -311,7 +311,7 @@ print('\n---Start of simulation---')
 registerFile.print_all()
 
 
-while current_cycle<30:
+while current_cycle<max_cycles:
 
     IR = [program_counter,instructionMemory.read_opcode(program_counter) , instructionMemory.read_operand_1(program_counter) , \
          instructionMemory.read_operand_2(program_counter) , instructionMemory.read_operand_3(program_counter)]
@@ -384,11 +384,7 @@ while current_cycle<30:
             print("error11")
 
     elif IR[1] == 'END':
-        try:
-
-            break
-        except:
-            print("error13")
+        break
     elif IR[1] == 'LD':
         try:
             registerFile.write_register(IR[2], dataMemory.read_data(registerFile.read_register(IR[3])))
@@ -409,9 +405,10 @@ registerFile.write_register('R0', 0)
 registerFile.print_all()
 
 print("Data memory content (used locations only):")
+
 for i in range(256):
     if not dataMemory.read_data(i)==0:
-        print("Address",i,dataMemory.read_data(i))
+        print("Address = ",i,dataMemory.read_data(i))
 
 
 print("Executes in ",current_cycle,"cycles.")
