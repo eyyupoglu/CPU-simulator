@@ -10,7 +10,7 @@ def dataLoad(filename):
         new_data=np.array([0,0,0])
         for a_line in f:
             word = a_line.split(' ')
-            data = np.array([float(word[0]),float(word[1]),float(word[0])])
+            data = np.array([float(word[0]),float(word[1]),float(word[2])])
 
             new_data = np.vstack((new_data,data))
 
@@ -22,10 +22,16 @@ def dataLoad(filename):
         if data[i][0] < 10 or data[i][0] > 60:
 
             print("error type: temperature in line", i)
+            continue
+
+
         if data[i][1] < 0:
 
             print("error type:  growth rate in line", i)
-            print(data[i])
+            continue
+        if not (data[i][2]==1 or data[i][2]==2 or data[i][2]==3 or data[i][2]==4):
+            print("error type: bacteria type in line",i)
+            continue
         else:
             new_array = np.vstack((new_array, data[i]))
 
