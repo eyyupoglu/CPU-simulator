@@ -4,34 +4,31 @@ import decimal
 
 
 def dataLoad(filename):
-    i=0
-    return_array=[]
+
     with open(filename+".txt") as f:
-        for every in f:
-            data = every
 
+        new_data=np.array([0,0,0])
+        for a_line in f:
+            word = a_line.split(' ')
+            data = np.array([float(word[0]),float(word[1]),float(word[0])])
 
-            words=data.split(' ')
+            new_data = np.vstack((new_data,data))
 
+    data = new_data
 
-            print(words[0], words[1], words[2])
+    new_array = np.array([0, 0, 0])
+    number_of_rows = data.shape[0]
+    for i in range(number_of_rows):
+        if data[i][0] < 10 or data[i][0] > 60:
 
-            if float(words[0]) > 60 or float(words[0]) <10 :
-                print("error in temperature for the line",i,"\n")
-            if float(words[1]) <0 :
-                print("error in Growth rate for the line",i,"\n")
-            if not (words[2] == '1\n' or words[2]=='2\n' or words[2]=='3\n' or words[2]=='4\n') :
-                print("error in Bacteria type for the line",i,"\n")
+            print("error type: temperature in line", i)
+        if data[i][1] < 0:
 
+            print("error type:  growth rate in line", i)
+            print(data[i])
+        else:
+            new_array = np.vstack((new_array, data[i]))
 
-
-            i=i+1
-
-
-
-
-
-
-    return data
+    return new_array
 
 print(dataLoad("test"))
